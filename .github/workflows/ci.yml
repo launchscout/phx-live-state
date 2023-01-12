@@ -1,61 +1,48 @@
-name: CI
+# Simple workflow for deploying static content to GitHub Pages
+name: Run tests and deploy docs
 
-on: push
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  test:
-    name: Build and run tests
-    runs-on: ubuntu-20.04
-
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout project
+      - name: Checkout
         uses: actions/checkout@v3
-      - name: Set up Elixir
-        uses: erlef/setup-beam@v1
-        with:
-          otp-version: '25.1' # Define the OTP version [required]
-          elixir-version: '1.14.0' # Define the elixir version [required]
-      - name: Restore dependencies cache
-        uses: actions/cache@v2
-        with:
-          path: live_state/deps
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-
-      - uses: actions/cache@v1
-        name: Cache build
-        with:
-          path: live_state/_build
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-      - name: Install dependencies
-        run: mix deps.get
-        working-directory: live_state
-      - name: Run live_state elixir tests
-        run: mix test
-        working-directory: live_state
-      - name: npm install phx-live-state
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+      - name: install npms
         run: npm install
-        working-directory: phx-live-state
-      - name: Run phx-live-state tests
+      - name: Run tests
         run: npm test
-        working-directory: phx-live-state
-      - name: build phx-live-state
-        run: npm run build
-        working-directory: phx-live-state
-      - name: npm install use-live-state
-        run: npm install
-        working-directory: use-live-state
-      - name: Install testbed dependencies
-        run: mix deps.get
-        working-directory: testbed
-      - name: npm install testbed assets
-        run: npm install
-        working-directory: testbed/assets
-      - name: build use-live-state
-        run: npm run build
-        working-directory: use-live-state
-      - name: build testbed javascript
-        run: mix esbuild default
-        working-directory: testbed
-      - name: Run testbed integration tests
-        run: mix test
-        working-directory: testbed
+      - name: Build type docs
+        run: npm run doc
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          # Upload entire repository
+          path: './docs'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1

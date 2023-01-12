@@ -16,7 +16,7 @@ npm install phx-live-state
 
 ## Documentation
 
-See [api docs](docs/index.html)
+See [api docs](https://launchscout.github.io/phx-live-state)
 
 ## LiveState
 
