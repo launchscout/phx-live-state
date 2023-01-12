@@ -10,7 +10,7 @@
     "pretest": "tsc",
     "prepublish": "npm run build",
     "setup": "npm install && npm run build",
-    "doc": "typedoc src/index.ts"
+    "doc": "typedoc --readme API_README.md src/index.ts"
   },
   "repository": {
     "type": "git",
