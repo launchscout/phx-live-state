@@ -29,24 +29,40 @@ export const connectElement = (liveState: LiveState, el: HTMLElement, { properti
   }
 }
 
+/**
+ Listens to `livestate-change` events on the LiveState instance passed in, and
+ updates the property on the element with value of the propery on the state.
+ */
 export const connectProperty = (liveState: LiveState, el: HTMLElement, propertyName: string) => {
   liveState.addEventListener('livestate-change', ({ detail: { state } }) => {
     el[propertyName] = state[propertyName];
   });
 }
 
+/**
+ Listens to `livestate-change` events on the LiveState instance passed in, and
+ sets the attributeon the element with value of the same name on the state.
+ */
 export const connectAtttribute = (liveState: LiveState, el: HTMLElement, attr: string) => {
   liveState.addEventListener('livestate-change', ({ detail: { state } }) => {
     el.setAttribute(attr, state[attr]);
   });
 }
 
+/**
+ * Listens to the specified event on the LiveState instance and when received,
+ * redispatches it on the element
+ */
 export const receiveEvent = (liveState: LiveState, el: HTMLElement, eventName: string) => {
   liveState.addEventListener(eventName, ({ detail }) => {
     el.dispatchEvent(new CustomEvent(eventName, { detail }));
   });
 }
 
+/**
+ * Listens to the specified event on the element, and when received,
+ * redispatches it on the liveState instance.
+ */
 export const sendEvent = (liveState: LiveState, el: HTMLElement, eventName: string) => {
   el.addEventListener(eventName, (event) => {
     const { detail } = event as CustomEvent
