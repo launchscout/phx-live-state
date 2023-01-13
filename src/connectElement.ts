@@ -10,6 +10,14 @@ export type ConnectOptions = {
   }
 }
 
+/**
+ * This will will connect a live state instance to an element. It will:
+ * 
+ * - set a `liveState` property on the element
+ * - call `connect` on the LiveState instance
+ * - connect properties and attributes
+ * - call `sendEvent` and `receiveEvent` for each specified event
+ */
 export const connectElement = (liveState: LiveState, el: HTMLElement, { properties, attributes, events }: ConnectOptions) => {
   if (el['liveState'] !== liveState) {
     liveState.connect();
