@@ -51,4 +51,4 @@ jobs:
         with:
           event-type: run-integration-tests
           repository: "launchscout/live_state_testbed"
-
+          token: ${{ secrets.TESTBED_PAT}}
