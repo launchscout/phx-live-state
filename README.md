@@ -1,7 +1,12 @@
+# What is LiveState?
+
+The goal of LiveState is to make building highly interactive web applications easier to build. Currently in most such applications clients send requests and receive responses from and to a server API. This essentially results in two applications, with state being managed in both in an ad hoc way.
+
+LiveState uses a different approach. Clients dispatch events, which are sent to the server to be handled, and receive updates from the server any time application state changes. This allows state to have a single source of truth, and greatly reduces client code complexity. It also works equally well for applications where updates to state can occur indepently from a user initiated client side event (think "real time" applications such as chat, etc).
+
 # phx-live-state
 
-This is a package to help you build embedded micro-front-end applications. It connects to
-a server running [live_state](https://github.com/gaslight/live_state) and sends events and receives state (and possibly other events). 
+This is a package to help you build clients for LiveState applications. Such clients connect to a server running [live_state](https://github.com/gaslight/live_state) and send events and receive state (and possibly other events). 
 
 ## Version compatibility
 
