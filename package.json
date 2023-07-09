@@ -1,8 +1,9 @@
 {
   "name": "phx-live-state",
-  "version": "0.9.1",
-  "description": "An experiment in web app state management",
+  "version": "0.9.2",
+  "description": "Front end library for live_state",
   "main": "build/src/index.js",
+  "module": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "scripts": {
     "test": "web-test-runner \"build/**/*test.js\" --node-resolve",
