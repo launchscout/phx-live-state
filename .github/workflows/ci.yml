@@ -52,3 +52,16 @@ jobs:
           event-type: run-integration-tests
           repository: "launchscout/live_state_testbed"
           token: ${{ secrets.TESTBED_PAT}}
+          
+  publish-npm:
+    needs: deploy
+    if: startsWith(github.ref, 'refs/tags/v')
+    name: Deploy to Fly.IO Production
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm publish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        
+
