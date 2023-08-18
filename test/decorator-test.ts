@@ -13,6 +13,9 @@ class InstanceDecorated {
 
   @liveStateConfig('url')
   get theUrl() { return 'bobbida'; }
+
+  @liveStateConfig('socketOptions')
+  socketOptions: object = { logger: null };
 }
 
 describe('liveStateConfig', () => {
@@ -22,5 +25,6 @@ describe('liveStateConfig', () => {
     expect(config.topic).to.eql('stuff');
     expect(config.url).to.eql('bobbida');
     expect(config.params['foo']).to.eql('other stuff'); 
+    expect(config.socketOptions['logger']).to.eql(null);
   });
 });

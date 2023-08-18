@@ -11,6 +11,9 @@ export type LiveStateConfig = {
 
   /** will be sent as params on channel join */
   params?: object
+
+  /** the options passed to the phoenix socket */
+  socketOptions?: object
 }
 
 export type LiveStateError = {
@@ -83,7 +86,10 @@ export class LiveState implements EventTarget {
 
   constructor(config: LiveStateConfig) {
     this.config = config;
-    this.socket = new Socket(this.config.url, { logger: ((kind, msg, data) => { console.log(`${kind}: ${msg}`, data) }) });
+    this.socket = new Socket(
+      this.config.url,
+      this.config.socketOptions || { logger: ((kind, msg, data) => { console.log(`${kind}: ${msg}`, data) }) }
+    );
     this.channel = this.socket.channel(this.config.topic, this.config.params);
     this.eventTarget = new EventTarget();
   }
