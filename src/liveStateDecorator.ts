@@ -1,5 +1,6 @@
 import connectElement, { ConnectOptions } from "./connectElement";
 import LiveState, { LiveStateConfig } from "./LiveState";
+import { connectProperty } from "./connectElement";
 import { registerContext, observeContext } from 'wc-context';
 import 'reflect-metadata';
 
@@ -200,4 +201,12 @@ export const liveStateConfig = (configProperty) => {
     proto._liveStateConfig[configProperty] = function () { return this[propertyName]; }
   }
 }
+
+export const liveStateProperty = (path? : string) => {
+  return (proto, propertyName) => {
+    proto._liveStateProperties = proto._liveStateProperties || [];
+    proto._liveStateProperties.push(propertyName);
+  }
+}
+
 export default liveState;

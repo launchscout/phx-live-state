@@ -21,12 +21,18 @@ export type ConnectOptions = {
 export const connectElement = (liveState: LiveState, el: HTMLElement, { properties, attributes, events }: ConnectOptions) => {
   if (el['liveState'] !== liveState) {
     liveState.connect();
-    properties?.forEach((p) => connectProperty(liveState, el, p));
+    connectProperties(liveState, el, properties);
     attributes?.forEach((attr) => connectAtttribute(liveState, el, attr));
     events?.send?.forEach((eventName) => sendEvent(liveState, el, eventName));
     events?.receive?.forEach((eventName) => receiveEvent(liveState, el, eventName));
     el['liveState'] = liveState;
   }
+}
+
+const connectProperties = (liveState, el, properties) => {
+  let mergedProperties = properties || [];
+  mergedProperties = el._liveStateProperties ? mergedProperties.concat(el._liveStateProperties) : mergedProperties;
+  mergedProperties?.forEach((p) => connectProperty(liveState, el, p));
 }
 
 /**

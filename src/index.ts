@@ -1,6 +1,6 @@
 import { LiveState, LiveStateConfig, LiveStateError, LiveStateChange, LiveStatePatch } from "./LiveState";
 import connectElement, { ConnectOptions, connectAtttribute, connectProperty, sendEvent, receiveEvent} from "./connectElement";
-import liveState, { liveStateConfig, LiveStateDecoratorOptions } from "./liveStateDecorator";
+import liveState, { liveStateConfig, LiveStateDecoratorOptions, liveStateProperty } from "./liveStateDecorator";
 export {
   connectElement,
   connectAtttribute,
@@ -8,7 +8,8 @@ export {
   sendEvent,
   receiveEvent,
   liveState, 
-  liveStateConfig, 
+  liveStateConfig,
+  liveStateProperty,
   LiveState, 
   LiveStateDecoratorOptions, 
   LiveStateConfig,
