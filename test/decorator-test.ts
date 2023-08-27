@@ -46,6 +46,9 @@ class DecoratedElement extends LitElement {
   @property()
   foo: string = 'bar';
 
+  @liveStateProperty('/bing/baz/bar')
+  nested: string;
+
   render() {
     return html`<div>${this.foo}</div>`
   }
@@ -76,4 +79,13 @@ describe('liveStateProperty', () => {
     await el.updateComplete;
     expect(el.foo).to.equal('wuzzle');
   });
+
+  it('updates nested properties on state changes', async () => {
+    const el: DecoratedElement = await fixture('<decorated-element></decorated-element>');
+    const stateChange = liveState.channel.on.getCall(0).args[1];
+    stateChange({state: { bing: {baz: { bar: 'wuzzle'} } }, version: 1});
+    await el.updateComplete;
+    expect(el.nested).to.equal('wuzzle');
+  });
+
 });

@@ -202,10 +202,34 @@ export const liveStateConfig = (configProperty) => {
   }
 }
 
+/**
+This decorator will cause a property to be updated from the state on any state change. It will
+use the property name as the path to the state property, unless a path is specified. Paths
+are in json pointer format. 
+
+Example:
+
+```typescript
+class DecoratedElement extends LitElement {
+
+  @liveStateProperty()
+  foo: string = 'bar';
+
+  @liveStateProperty('/bing/baz/bar')
+  nested: string;
+
+}
+```
+ */
+
 export const liveStateProperty = (path? : string) => {
   return (proto, propertyName) => {
     proto._liveStateProperties = proto._liveStateProperties || [];
-    proto._liveStateProperties.push(propertyName);
+    if (path) {
+      proto._liveStateProperties.push({name: propertyName, path});
+    } else {
+      proto._liveStateProperties.push(propertyName);
+    }
   }
 }
 
