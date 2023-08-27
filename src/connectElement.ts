@@ -3,7 +3,7 @@ import liveState from "./liveStateDecorator";
 import { parseJsonPointer, get } from "json-joy/esm/json-pointer";
 
 export type ConnectOptions = {
-  properties?: Array<Property>;
+  properties?: Array<LiveStateProperty>;
   attributes?: Array<string>;
   events?: {
     send?: Array<string>,
@@ -36,16 +36,16 @@ const connectProperties = (liveState, el, properties) => {
   mergedProperties?.forEach((p) => connectProperty(liveState, el, p));
 }
 
-type Property = string | { name: string, path: string };
+export type LiveStateProperty = string | { name: string, path: string };
 /**
  Listens to `livestate-change` events on the LiveState instance passed in, and
  updates the property on the element with value of the propery on the state.
  */
-export const connectProperty = (liveState: LiveState, el: HTMLElement, property: Property) => {
+export const connectProperty = (liveState: LiveState, el: HTMLElement, property: LiveStateProperty) => {
   liveState.addEventListener('livestate-change', buildPropertyListener(el, property));
 }
 
-const buildPropertyListener = (el, property: Property) => {
+const buildPropertyListener = (el, property: LiveStateProperty) => {
   if (typeof property === 'string') {
     return ({ detail: { state } }) => {
       el[property] = state[property];
