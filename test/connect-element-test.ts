@@ -12,6 +12,8 @@ class TestElement extends LitElement {
   @property() foo: string;
   @state() bar: string;
 
+  @state() nested: string;
+
   constructor() {
     super();
     this.addEventListener('livestate-error', (e: CustomEvent) => {
@@ -58,6 +60,17 @@ describe('connectElement', () => {
     expect(el.shadowRoot.innerHTML).to.contain('wizzle');
     expect(el.getAttribute('foo')).to.equal('wuzzle');
     expect(el.shadowRoot.innerHTML).to.contain('wuzzle');
+  });
+
+  it('updates nested state properties', async () => {
+    const el: TestElement = await fixture('<test-element></test-element>');
+    connectElement(liveState, el, {
+      properties: [{name: 'nested', path: '/foo/bar'}],
+    });
+    const stateChange = liveState.channel.on.getCall(0).args[1];
+    stateChange({state: { foo: {bar: 'wizzle' }}, version: 1});
+    await el.updateComplete;
+    expect(el.nested).to.equal('wizzle');
   });
 
   it('sends events', async () => {
