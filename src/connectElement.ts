@@ -36,7 +36,14 @@ const connectProperties = (liveState, el, properties) => {
   mergedProperties?.forEach((p) => connectProperty(liveState, el, p));
 }
 
+/**
+ * A property name or an object with a `name` and `path` property. The `name`
+ * property will be used as the property name on the element, and the `path`
+ * property will be used to look up the value on the state. The path should be
+ * a json pointer.
+ */
 export type LiveStateProperty = string | { name: string, path: string };
+
 /**
  Listens to `livestate-change` events on the LiveState instance passed in, and
  updates the property on the element with value of the propery on the state.
