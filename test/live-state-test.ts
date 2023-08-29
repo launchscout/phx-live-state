@@ -87,6 +87,33 @@ describe('LiveState', () => {
     expect(state).to.deep.equal(newState);
   });
 
+  it('accepts version number rollover in json patch', () => {
+    const initialState = { foo: "bar" };
+    const newState = { foo: "baz"};
+    const patch = compare(initialState, newState);
+    socketMock.expects('connect').exactly(1);
+    liveState.connect();
+    let state = {};
+    let receivedPatch;
+
+    liveState.addEventListener('livestate-change', ({detail: {state: newState}}) => state = newState);
+    liveState.addEventListener('livestate-patch', ({detail: {patch: thePatch}}) => receivedPatch = thePatch);
+
+    const onChangeArgs = liveState.channel.on.getCall(0).args;
+    expect(onChangeArgs[0]).to.equal("state:change");
+    const onChangeHandler = onChangeArgs[1];
+    onChangeHandler({state: initialState, version: 1000});
+
+    const onPatchArgs = liveState.channel.on.getCall(1).args;
+    expect(onPatchArgs[0]).to.equal("state:patch");
+    const onPatchHandler = onPatchArgs[1];
+    onPatchHandler({patch, version: 0});
+
+    expect(receivedPatch).to.equal(patch);
+    expect(state).to.deep.equal(newState);
+
+  })
+
   it('requests new state when receiving patch with incorrect version', () => {
     const initialState = { foo: "bar" };
     const newState = { foo: "baz", bing: [1, 2] };

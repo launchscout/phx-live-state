@@ -168,7 +168,7 @@ export class LiveState implements EventTarget {
     this.eventTarget.dispatchEvent(new CustomEvent<LiveStatePatch>('livestate-patch', {
       detail: {patch, version}
     }));
-    if (version === this.stateVersion + 1) {
+    if (this.versionMatches(version)) {
       const { doc, res } = applyPatch(this.state, patch, { mutate: false });
       this.state = doc;
       this.stateVersion = version;
@@ -181,6 +181,10 @@ export class LiveState implements EventTarget {
     } else {
       this.channel.push('lvs_refresh');
     }
+  }
+
+  versionMatches(version) {
+    return (version === this.stateVersion + 1) || (version === 0);
   }
 
   pushEvent(eventName, payload) {
