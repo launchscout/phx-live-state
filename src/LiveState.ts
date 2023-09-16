@@ -88,7 +88,7 @@ export class LiveState implements EventTarget {
     this.config = config;
     this.socket = new Socket(
       this.config.url,
-      this.config.socketOptions || { logger: ((kind, msg, data) => { console.log(`${kind}: ${msg}`, data) }) }
+      this.config.socketOptions || { logger: ((kind, msg, data) => { console.debug(`${kind}: ${msg}`, data) }) }
     );
     this.channel = this.socket.channel(this.config.topic, this.config.params);
     this.eventTarget = new EventTarget();
@@ -99,9 +99,9 @@ export class LiveState implements EventTarget {
     if (!this.connected) {
       this.socket.onError((e) => this.emitError('socket error', e));
       this.socket.connect();
-      this.channel.onError((e) => console.log('channel error', e));
-      this.channel.join().receive("ok", () => {
-        console.log('joined');
+      this.channel.onError((e) => this.emitError('channel error', e));
+      this.channel.join().receive("ok", (resp) => {
+        console.debug('channel joined', resp);
       }).receive('error', (e) => {
         this.emitError('channel join error', e)
       });
