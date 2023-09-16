@@ -30,7 +30,7 @@ export type LiveStateChange = {
 
   /** state version as known by the channel */
   version: number;
-  
+
   state: object;
 }
 
@@ -126,8 +126,8 @@ export class LiveState implements EventTarget {
     this.eventTarget.addEventListener(type, listener, options);
     if (!type.startsWith('livestate-')) {
       this.channel?.on(type, (payload) => {
-        this.eventTarget.dispatchEvent(new CustomEvent(type, {detail: payload}));
-      });      
+        this.eventTarget.dispatchEvent(new CustomEvent(type, { detail: payload }));
+      });
     }
   }
 
@@ -166,7 +166,7 @@ export class LiveState implements EventTarget {
 
   handlePatch({ patch, version }) {
     this.eventTarget.dispatchEvent(new CustomEvent<LiveStatePatch>('livestate-patch', {
-      detail: {patch, version}
+      detail: { patch, version }
     }));
     if (this.versionMatches(version)) {
       const { doc, res } = applyPatch(this.state, patch, { mutate: false });
@@ -188,14 +188,24 @@ export class LiveState implements EventTarget {
   }
 
   pushEvent(eventName, payload) {
-    this.dispatchEvent(new CustomEvent(eventName, {detail: payload}));
+    this.dispatchEvent(new CustomEvent(eventName, { detail: payload }));
   }
 
   /** Pushes the event over the channel, adding the `lvs_evt:` prefix and using the CustomEvent
    * detail property as the payload
    */
   dispatchEvent(event: Event) {
-    this.channel.push(`lvs_evt:${event.type}`, (event as CustomEvent).detail);
+    switch (event.type) {
+      case 'submit':
+        event.preventDefault();
+        const form = event.target as HTMLFormElement;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        this.channel.push(`lvs_evt:submit`, data);
+        break;
+      default:
+        this.channel.push(`lvs_evt:${event.type}`, (event as CustomEvent).detail);
+    }
     return true;
   }
 

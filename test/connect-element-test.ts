@@ -26,6 +26,20 @@ class TestElement extends LitElement {
   }
 }
 
+@customElement('form-element')
+class FormElement extends LitElement {
+
+  render() {
+    return html`
+    <form>
+      <input name="name" value="Mom" />
+      <button type="submit">Save</button>
+    </form>
+    `;
+  }
+}
+
+
 describe('connectElement', () => {
   let socketMock, liveState, stubChannel, receiveStub;
   beforeEach(() => {
@@ -87,6 +101,25 @@ describe('connectElement', () => {
     const pushCall = liveState.channel.push.getCall(0);
     expect(pushCall.args[0]).to.equal('lvs_evt:sayHi');
     expect(pushCall.args[1]).to.deep.equal({ greeting: 'wazzaap' });
+  });
+
+  it('sends form events', async () => {
+    const el: FormElement = await fixture('<form-element></form-element>');
+    el.shadowRoot.addEventListener('submit', (e) => {
+      console.log(e.composed);
+      e.preventDefault();
+    })
+    connectElement(liveState, el, {
+      events: {
+        send: ['submit']
+      }
+    });
+    const submitButton = el.shadowRoot.querySelector("button");
+    submitButton.click();
+    expect(liveState.channel.push.callCount).to.equal(1);
+    const pushCall = liveState.channel.push.getCall(0);
+    expect(pushCall.args[0]).to.equal('lvs_evt:submit');
+    expect(pushCall.args[1]).to.deep.equal({ name: 'Mom' });
   });
 
   it('connects idempotently', async () => {

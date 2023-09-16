@@ -91,9 +91,23 @@ export const receiveEvent = (liveState: LiveState, el: HTMLElement, eventName: s
  * redispatches it on the liveState instance.
  */
 export const sendEvent = (liveState: LiveState, el: HTMLElement, eventName: string) => {
+  console.log('sending event', eventName);
   el.addEventListener(eventName, (event) => {
-    const { detail } = event as CustomEvent
-    liveState.dispatchEvent(new CustomEvent(eventName, { detail }));
+    console.log('WTF!!!', event);
+    event.preventDefault();
+    switch (event.type) {
+      case 'submit':
+        event.preventDefault();
+        const form = event.target as HTMLFormElement;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        liveState.dispatchEvent(event);
+        break;
+      default:
+        const { detail } = event as CustomEvent
+        liveState.dispatchEvent(new CustomEvent(eventName, { detail }));
+    }
+
   });
 }
 
