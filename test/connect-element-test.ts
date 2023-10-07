@@ -17,8 +17,8 @@ class TestElement extends LitElement {
   constructor() {
     super();
     this.addEventListener('livestate-error', (e: CustomEvent) => {
-      this.foo = (e.detail as any).kind;
-      this.bar = (e.detail as any).source?.type;
+      this.foo = (e.detail as any).message;
+      this.bar = (e.detail as any).type;
     })
   }
   render() {
@@ -119,7 +119,7 @@ describe('connectElement', () => {
         receive: ['sayHiBack']
       }
     });
-    const onArgs = liveState.channel.on.getCall(2).args;
+    const onArgs = liveState.channel.on.getCall(3).args;
     expect(onArgs[0]).to.equal("sayHiBack")
     const onHandler = onArgs[1];
     let eventDetail;

@@ -51,7 +51,7 @@ describe('LiveState', () => {
     liveState.connect();
     let state = { foo: 'bar' };
     liveState.addEventListener('livestate-change', ({ detail: {state: {foo}} }) => state.foo = foo);
-    expect(liveState.channel.on.callCount).to.equal(2)
+    expect(liveState.channel.on.callCount).to.equal(3)
     const onArgs = liveState.channel.on.getCall(0).args;
     expect(onArgs[0]).to.equal("state:change");
     const onHandler = onArgs[1];
@@ -168,15 +168,32 @@ describe('LiveState', () => {
     socketMock.expects('connect').exactly(1);
     liveState.connect();
     const errorHandler = receiveStub.getCall(1).args[1];
-    let errorType, source;
-    liveState.addEventListener('livestate-error', ({detail: {kind, error}}) => {
-      errorType = kind;
-      source = error;
+    let errorType, errorMessage;
+    liveState.addEventListener('livestate-error', ({detail: {type, message}}) => {
+      errorType = type;
+      errorMessage = message;
     });
     errorHandler({reason: 'unmatched topic'});
     expect(errorType).to.equal('channel join error');
-    expect(source.reason).to.equal('unmatched topic');
+    expect(errorMessage).to.equal('unmatched topic');
   });
+
+  it('receives errors from server', () => {
+    socketMock.expects('connect').exactly(1);
+    liveState.connect();
+    expect(liveState.channel.on.callCount).to.equal(3)
+    const onArgs = liveState.channel.on.getCall(2).args;
+    expect(onArgs[0]).to.equal("error");
+    const onHandler = onArgs[1];
+    let errorType, errorMessage;
+    liveState.addEventListener('livestate-error', ({detail: {type, message}}) => {
+      errorType = type;
+      errorMessage = message;
+    });
+    onHandler({type: "server error", message: "sumpin bad happened"});
+    expect(errorType).to.equal('server error');
+    expect(errorMessage).to.equal('sumpin bad happened');
+  })
 
   it('addEventListenter receives events from channel', async () => {
     socketMock.expects('connect').exactly(1);
@@ -185,7 +202,7 @@ describe('LiveState', () => {
     let eventDetail;
     liveState.addEventListener('sayHiBack', ({ detail }: CustomEvent) => { eventDetail = detail });
 
-    const onArgs = liveState.channel.on.getCall(2).args;
+    const onArgs = liveState.channel.on.getCall(3).args;
     expect(onArgs[0]).to.equal("sayHiBack")
     const onHandler = onArgs[1];
     onHandler({ foo: 'bar' })

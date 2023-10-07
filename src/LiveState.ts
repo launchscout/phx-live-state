@@ -20,10 +20,10 @@ export type LiveStateError = {
   /**
    * Describes what type of error occurred. 
    */
-  kind: string;
+  type: string;
 
   /** The original error payload, type depends on error */
-  error: any;
+  message: string;
 }
 
 export type LiveStateChange = {
@@ -107,6 +107,7 @@ export class LiveState implements EventTarget {
       });
       this.channel.on("state:change", (state) => this.handleChange(state));
       this.channel.on("state:patch", (patch) => this.handlePatch(patch));
+      this.channel.on("error", (error) => this.emitServerError(error));
       this.connected = true;
     }
   }
@@ -145,12 +146,26 @@ export class LiveState implements EventTarget {
     this.removeEventListener('livestate-change', subscriber);
   }
 
-  emitError(kind, error) {
+  emitServerError(error) {
+    this.eventTarget.dispatchEvent(new CustomEvent<LiveStateError>('livestate-error', {detail: error}));
+  }
+
+  emitError(type, error) {
     this.eventTarget.dispatchEvent(new CustomEvent<LiveStateError>('livestate-error', {
       detail: {
-        kind, error
+        type, message: this.extractMessage(error)
       }
     }))
+  }
+
+  extractMessage(error) {
+    if (typeof(error == 'object')) {
+      const message =  [error.reason, error.name, error.message].find(value => value);
+      console.log(message);
+      return message;
+    } else if (typeof(error) == 'string') {
+      return error;
+    }
   }
 
   handleChange({ state, version }) {
