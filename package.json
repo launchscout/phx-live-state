@@ -1,6 +1,6 @@
 {
   "name": "phx-live-state",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "Front end library for live_state",
   "main": "build/src/index.js",
   "module": "build/src/index.js",
