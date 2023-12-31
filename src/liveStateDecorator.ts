@@ -1,7 +1,7 @@
 import connectElement, { ConnectOptions } from "./connectElement.js";
 import LiveState, { LiveStateConfig } from "./LiveState.js";
 import { connectProperty } from "./connectElement";
-import { registerContext, observeContext } from '@launchscout/wc-context';
+import { registerContext, observeContext } from 'wc-context';
 import 'reflect-metadata';
 
 export type LiveStateDecoratorOptions = {
