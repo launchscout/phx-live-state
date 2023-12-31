@@ -1,6 +1,6 @@
 import LiveState from "./LiveState";
 import liveState from "./liveStateDecorator";
-import { parseJsonPointer, get } from "json-joy/esm/json-pointer";
+import subscript from 'subscript';
 
 export type ConnectOptions = {
   properties?: Array<LiveStateProperty>;
@@ -59,8 +59,8 @@ const buildPropertyListener = (el, property: LiveStateProperty) => {
     }
   } else {
     return ({ detail: { state } }) => {
-      const jsonPointer = parseJsonPointer(property.path);
-      const val = get(state, jsonPointer);
+      const fn = subscript(property.path);
+      const val = fn(state);
       el[property.name] = val;
     }
   }

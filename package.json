@@ -1,6 +1,6 @@
 {
   "name": "phx-live-state",
-  "version": "0.10.3",
+  "version": "0.11.0",
   "description": "Front end library for live_state",
   "main": "build/src/index.js",
   "module": "build/src/index.js",
@@ -39,6 +39,7 @@
     "lit": "^2.2.6",
     "phoenix": "1.6.15",
     "reflect-metadata": "^0.1.13",
-    "wc-context": "launchscout/wc-context"
+    "subscript": "^7.4.6",
+    "@launchscout/wc-context": ">= 0.0.0"
   }
 }

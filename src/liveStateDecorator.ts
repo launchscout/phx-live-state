@@ -1,7 +1,7 @@
-import connectElement, { ConnectOptions } from "./connectElement";
-import LiveState, { LiveStateConfig } from "./LiveState";
+import connectElement, { ConnectOptions } from "./connectElement.js";
+import LiveState, { LiveStateConfig } from "./LiveState.js";
 import { connectProperty } from "./connectElement";
-import { registerContext, observeContext } from 'wc-context';
+import { registerContext, observeContext } from '@launchscout/wc-context';
 import 'reflect-metadata';
 
 export type LiveStateDecoratorOptions = {
@@ -203,9 +203,9 @@ export const liveStateConfig = (configProperty) => {
 }
 
 /**
-This decorator will cause a property to be updated from the state on any state change. It will
-use the property name as the path to the state property, unless a path is specified. Paths
-are in json pointer format. 
+This decorator will cause a property to be updated from the state on any state change. It takes
+an optional expression to pull the value from the state, otherwise it will assume there exists 
+a property on the state of the same name.
 
 Example:
 
@@ -215,7 +215,7 @@ class DecoratedElement extends LitElement {
   @liveStateProperty()
   foo: string = 'bar';
 
-  @liveStateProperty('/bing/baz/bar')
+  @liveStateProperty('bing.baz.bar')
   nested: string;
 
 }

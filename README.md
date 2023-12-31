@@ -10,7 +10,7 @@ This is a package to help you build clients for LiveState applications. Such cli
 
 ## Version compatibility
 
-This version, 0.7.0, requires version 0.5.0 of later of the [`live_state` elixir library](https://github.com/gaslight/live_state) due to the addition of version tracking for state.
+This version, 0.7.0, requires version 0.5.0 of later of the [`live_state` elixir library](https://github.com/launchscout/live_state) due to the addition of version tracking for state.
 
 ## Installation
 

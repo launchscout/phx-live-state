@@ -1,6 +1,6 @@
-import { LiveState, LiveStateConfig, LiveStateError, LiveStateChange, LiveStatePatch } from "./LiveState";
-import connectElement, { ConnectOptions, connectAtttribute, connectProperty, sendEvent, receiveEvent, LiveStateProperty} from "./connectElement";
-import liveState, { liveStateConfig, LiveStateDecoratorOptions, liveStateProperty } from "./liveStateDecorator";
+import { LiveState, LiveStateConfig, LiveStateError, LiveStateChange, LiveStatePatch } from "./LiveState.js";
+import connectElement, { ConnectOptions, connectAtttribute, connectProperty, sendEvent, receiveEvent, LiveStateProperty} from "./connectElement.js";
+import liveState, { liveStateConfig, LiveStateDecoratorOptions, liveStateProperty } from "./liveStateDecorator.js";
 export {
   connectElement,
   connectAtttribute,

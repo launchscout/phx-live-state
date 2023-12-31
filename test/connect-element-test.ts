@@ -65,7 +65,7 @@ describe('connectElement', () => {
   it('updates nested state properties', async () => {
     const el: TestElement = await fixture('<test-element></test-element>');
     connectElement(liveState, el, {
-      properties: [{name: 'nested', path: '/foo/bar'}],
+      properties: [{name: 'nested', path: 'foo.bar'}],
     });
     const stateChange = liveState.channel.on.getCall(0).args[1];
     stateChange({state: { foo: {bar: 'wizzle' }}, version: 1});
