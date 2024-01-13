@@ -159,7 +159,7 @@ export class LiveState implements EventTarget {
   }
 
   extractMessage(error) {
-    if (typeof(error == 'object')) {
+    if (error && typeof(error == 'object')) {
       const message =  [error.reason, error.name, error.message].find(value => value);
       console.log(message);
       return message;

@@ -178,6 +178,19 @@ describe('LiveState', () => {
     expect(errorMessage).to.equal('unmatched topic');
   });
 
+  it('does not error when sending errors', () => {
+    socketMock.expects('connect').exactly(1);
+    liveState.connect();
+    const errorHandler = receiveStub.getCall(1).args[1];
+    let errorType, errorMessage;
+    liveState.addEventListener('livestate-error', ({detail: {type, message}}) => {
+      errorType = type;
+      errorMessage = message;
+    });
+    errorHandler();
+    expect(errorType).to.equal('channel join error');
+  });
+
   it('receives errors from server', () => {
     socketMock.expects('connect').exactly(1);
     liveState.connect();
