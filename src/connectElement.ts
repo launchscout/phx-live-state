@@ -1,8 +1,8 @@
-import LiveState from "./LiveState";
-import liveState from "./liveStateDecorator";
+import LiveState, {LiveStateConfig} from "./LiveState";
+import liveState, { liveStateConfig } from "./liveStateDecorator";
 import subscript from 'subscript';
 
-export type ConnectOptions = {
+export type ConnectOptions = LiveStateConfig & {
   properties?: Array<LiveStateProperty>;
   attributes?: Array<string>;
   events?: {
@@ -19,15 +19,28 @@ export type ConnectOptions = {
  * - connect properties and attributes
  * - call `sendEvent` and `receiveEvent` for each specified event
  */
-export const connectElement = (liveState: LiveState, el: HTMLElement, { properties, attributes, events }: ConnectOptions) => {
-  if (el['liveState'] !== liveState) {
-    liveState.connect();
-    connectProperties(liveState, el, properties);
-    attributes?.forEach((attr) => connectAtttribute(liveState, el, attr));
-    events?.send?.forEach((eventName) => sendEvent(liveState, el, eventName));
-    events?.receive?.forEach((eventName) => receiveEvent(liveState, el, eventName));
-    el['liveState'] = liveState;
+export const connectElement = (liveStateOrEl: LiveState | HTMLElement, elOrOptions: HTMLElement | ConnectOptions, options?: ConnectOptions) => {
+  if (liveStateOrEl instanceof LiveState) {
+    const liveState = liveStateOrEl as LiveState;
+    const el = elOrOptions as HTMLElement;
+    if (el['liveState'] !== liveState) {
+      doConnect(el, liveState, options);
+    }
+  } else {
+    const liveState = new LiveState(elOrOptions as ConnectOptions);
+    doConnect(liveStateOrEl as HTMLElement, liveState, elOrOptions as ConnectOptions);
   }
+}
+
+const doConnect = (el: HTMLElement, liveState: LiveState, options: ConnectOptions) => {
+  const { properties, attributes, events } = options;
+  liveState.connect();
+  connectProperties(liveState, el, properties);
+  attributes?.forEach((attr) => connectAtttribute(liveState, el, attr));
+  events?.send?.forEach((eventName) => sendEvent(liveState, el, eventName));
+  events?.receive?.forEach((eventName) => receiveEvent(liveState, el, eventName));
+  el['liveState'] = liveState;
+
 }
 
 const connectProperties = (liveState, el, properties) => {

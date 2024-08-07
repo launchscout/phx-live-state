@@ -47,6 +47,17 @@ describe('connectElement', () => {
     socketMock.expects('connect').exactly(1);
   });
 
+  it('creates livestate instance with arity 2 version', async() => {
+    const el: TestElement = await fixture('<test-element></test-element>');
+    connectElement(el, {
+      url: 'ws://foo.bar',
+      topic: 'howdy',
+      properties: ['bar'],
+      attributes: ['foo']
+    });
+    expect(el['liveState']).to.be.instanceOf(LiveState);
+  });
+
   it('updates on state changes', async () => {
     const el: TestElement = await fixture('<test-element></test-element>');
     connectElement(liveState, el, {
