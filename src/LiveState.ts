@@ -61,7 +61,7 @@ export type LiveStatePatch = {
  * Events which begin with `livestate-` are assumed to be livestate internal events.
  * The following CustomEvents are supported:
  * 
- * | Error             | Detail type             | Description                          |
+ * | Event             | Detail type             | Description                          |
  * | ----------------- | ----------------------- | ------------------------------------ |
  * | livestate-error   | {@link LiveStateError}  | Occurs on channel or socket errors   |
  * | livestate-change  | {@link LiveStateChange} | on `state:change` from channel       |
@@ -70,7 +70,7 @@ export type LiveStatePatch = {
  * 
  * Will occur on channel or socket errors. The `detail` will consist of 
  * 
- * And other event name not prefixed with `livestate-` will be assumed to be a channel
+ * Any other event name not prefixed with `livestate-` will be assumed to be a channel
  * event and will result in a event being listened to on the channel, which when
  * received, will be dispatched as a CustomEvent of the same name with the payload 
  * from the channel event becoming the `detail` property.

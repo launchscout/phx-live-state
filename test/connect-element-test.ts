@@ -69,7 +69,7 @@ describe('connectElement', () => {
     await el.updateComplete;
     expect(el.bar).to.equal('wizzle');
     expect(el.shadowRoot.innerHTML).to.contain('wizzle');
-    expect(el.getAttribute('foo')).to.equal('wozle');
+    expect(el.getAttribute('foo')).to.equal('wuzzle');
     expect(el.shadowRoot.innerHTML).to.contain('wuzzle');
   });
 
