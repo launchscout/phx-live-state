@@ -27,10 +27,9 @@ class TestElement extends LitElement {
 }
 
 describe('connectElement', () => {
-  let socketMock, liveState, stubChannel, receiveStub;
+  let liveState, stubChannel, receiveStub;
   beforeEach(() => {
     liveState = new LiveState({url: "wss://foo.com", topic: "stuff"});
-    socketMock = sinon.mock(liveState.socket);
     receiveStub = sinon.stub();
     receiveStub.withArgs("ok", sinon.match.func).returns({receive: receiveStub});
     stubChannel = sinon.createStubInstance(Channel, {
@@ -43,10 +42,6 @@ describe('connectElement', () => {
     liveState.channel = stubChannel;
   });
   
-  beforeEach(() => {
-    socketMock.expects('connect').exactly(1);
-  });
-
   it('creates livestate instance with arity 2 version', async() => {
     const el: TestElement = await fixture('<test-element></test-element>');
     connectElement(el, {
@@ -60,6 +55,7 @@ describe('connectElement', () => {
 
   it('updates on state changes', async () => {
     const el: TestElement = await fixture('<test-element></test-element>');
+    liveState.connect();
     connectElement(liveState, el, {
       properties: ['bar'],
       attributes: ['foo']
@@ -75,6 +71,7 @@ describe('connectElement', () => {
 
   it('updates nested state properties', async () => {
     const el: TestElement = await fixture('<test-element></test-element>');
+    liveState.connect();
     connectElement(liveState, el, {
       properties: [{name: 'nested', path: 'foo.bar'}],
     });
@@ -86,6 +83,7 @@ describe('connectElement', () => {
 
   it('sends events', async () => {
     const el: TestElement = await fixture('<test-element></test-element>');
+    liveState.connect();
     connectElement(liveState, el, {
       properties: ['bar'],
       attributes: ['foo'],
@@ -102,6 +100,7 @@ describe('connectElement', () => {
 
   it('connects idempotently', async () => {
     const el: TestElement = await fixture('<test-element></test-element>');
+    liveState.connect();
     connectElement(liveState, el, {
       properties: ['bar'],
       attributes: ['foo'],
@@ -122,6 +121,7 @@ describe('connectElement', () => {
 
   it('receives events', async () => {
     const el: TestElement = await fixture('<test-element></test-element>');
+    liveState.connect();
     connectElement(liveState, el, {
       properties: ['bar'],
       attributes: ['foo'],
@@ -139,8 +139,20 @@ describe('connectElement', () => {
     expect(eventDetail).to.deep.equal({ foo: 'bar' });
   });
 
+  it('does not call connect when given a LiveState instance', async () => {
+    const el: TestElement = await fixture('<test-element></test-element>');
+    const connectSpy = sinon.spy(liveState, 'connect');
+    connectElement(liveState, el, {
+      properties: ['bar'],
+      attributes: ['foo']
+    });
+    expect(connectSpy.callCount).to.equal(0);
+    connectSpy.restore();
+  });
+
   it('receives errors', async () => {
     const el: TestElement = await fixture('<test-element></test-element>');
+    liveState.connect();
     connectElement(liveState, el, {
       properties: ['bar'],
       attributes: ['foo'],

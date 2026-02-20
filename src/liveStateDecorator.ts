@@ -54,6 +54,7 @@ const connectToLiveState = (element: any, options: LiveStateDecoratorOptions) =>
     const liveState = scope[name] ? scope[name] :
       scope[name] = buildLiveState(element, options);
     registerContext(scope, name, liveState)
+    liveState.connect();
     connectElement(liveState, element, options as any);
   } else if (options.context) {
     observeContext(element, options.context, element, (element, liveState) => {

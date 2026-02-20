@@ -144,6 +144,17 @@ describe('LiveState', () => {
     liveState.disconnect();
     socketMock.verify();
     expect(liveState.connected).to.be.false;
+    expect(liveState.channel).to.be.null;
+  });
+
+  it('can reconnect after disconnect', () => {
+    socketMock.expects('connect').exactly(2);
+    liveState.connect();
+    liveState.disconnect();
+    liveState.connect();
+    socketMock.verify();
+    expect(liveState.connected).to.be.true;
+    expect(liveState.channel).to.not.be.null;
   });
 
   it('dispatches custom events over the channel', () => {

@@ -97,6 +97,9 @@ export class LiveState implements EventTarget {
   /** connect to socket and join channel. will do nothing if already connected */
   connect() {
     if (!this.connected) {
+      if (!this.channel) {
+        this.channel = this.socket.channel(this.config.topic, this.config.params);
+      }
       this.socket.onError((e) => this.emitError('socket error', e));
       this.socket.connect();
       this.channel.onError((e) => this.emitError('channel error', e));
@@ -115,6 +118,7 @@ export class LiveState implements EventTarget {
   /** leave channel and disconnect from socket */
   disconnect() {
     this.channel && this.channel.leave();
+    this.channel = null;
     this.socket.disconnect();
     this.connected = false;
   }

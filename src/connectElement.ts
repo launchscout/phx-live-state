@@ -24,7 +24,7 @@ export const connectElement = (liveStateOrEl: LiveState | HTMLElement, elOrOptio
     const liveState = liveStateOrEl as LiveState;
     const el = elOrOptions as HTMLElement;
     if (el['liveState'] !== liveState) {
-      doConnect(el, liveState, options);
+      wireUp(el, liveState, options);
     }
   } else {
     const liveState = new LiveState(elOrOptions as ConnectOptions);
@@ -32,15 +32,18 @@ export const connectElement = (liveStateOrEl: LiveState | HTMLElement, elOrOptio
   }
 }
 
-const doConnect = (el: HTMLElement, liveState: LiveState, options: ConnectOptions) => {
+const wireUp = (el: HTMLElement, liveState: LiveState, options: ConnectOptions) => {
   const { properties, attributes, events } = options;
-  liveState.connect();
   connectProperties(liveState, el, properties);
   attributes?.forEach((attr) => connectAtttribute(liveState, el, attr));
   events?.send?.forEach((eventName) => sendEvent(liveState, el, eventName));
   events?.receive?.forEach((eventName) => receiveEvent(liveState, el, eventName));
   el['liveState'] = liveState;
+}
 
+const doConnect = (el: HTMLElement, liveState: LiveState, options: ConnectOptions) => {
+  liveState.connect();
+  wireUp(el, liveState, options);
 }
 
 const connectProperties = (liveState, el, properties) => {
