@@ -83,8 +83,11 @@ export const extractConfig = (element): LiveStateConfig => {
 }
 
 const flattenParams = (object) => {
-  const params = Object.keys(object).filter((key) => key.startsWith('params.')).reduce((params, key) => {
+  const paramKeys = Object.keys(object).filter((key) => key.startsWith('params.'));
+  if (paramKeys.length === 0) return;
+  const params = paramKeys.reduce((params, key) => {
     params[key.replace('params.', '')] = object[key];
+    delete object[key];
     return params;
   }, {});
   object.params = params;
@@ -170,6 +173,11 @@ export function liveState(options: LiveStateDecoratorOptions) {
     targetClass.prototype.disconnectedCallback = function () {
       superDisconnected?.apply(this)
       this.liveState && this.liveState.disconnect();
+      if (options.provide) {
+        const { scope, name } = options.provide;
+        console.log(`deleting ${name} from ${scope}`);
+        delete scope[name];
+      }
     }
   }
 }
